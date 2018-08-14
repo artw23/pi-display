@@ -1,31 +1,23 @@
-#include "PJ_RPI.h"
 #include <stdio.h>
+#include <wiringPi.h>
 
-int main()
+// LED Pin - wiringPi pin 0 is BCM_GPIO 17.
+
+#define	LED	0
+
+int main (void)
 {
-	if(map_peripheral(&gpio) == -1)
-	{
-       	 	printf("Failed to map the physical GPIO registers into the virtual memory space.\n");
-        	return -1;
-    	}
+  printf ("Raspberry Pi blink\n") ;
 
-	// Define gpio 17 as output
-	printf("Defining GPIO 17 as output");
-	INP_GPIO(17);
-	OUT_GPIO(17);
+  wiringPiSetup () ;
+  pinMode (LED, OUTPUT) ;
 
-	while(1)
-	{
-		// Toggle 17 (blink a led!)
-		printf("ON!!");
-		GPIO_SET = 1 << 17;
-		sleep(1);
-
-		printf("OFF!!");
-		GPIO_CLR = 1 << 17;
-		sleep(1);
-	}
-
-	return 0;
-
+  for (;;)
+  {
+    digitalWrite (LED, HIGH) ;	// On
+    delay (500) ;		// mS
+    digitalWrite (LED, LOW) ;	// Off
+    delay (500) ;
+  }
+  return 0 ;
 }

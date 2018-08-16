@@ -85,7 +85,7 @@ void waitForBounce(){
 }
 
 void button0Interrupt(void){
-  printf("Interrupt 0\n");
+  printf("Interrupt 0: PAUSE/RUNNING\n");
   waitForBounce();
   if(actualMode == RUNNING){
     actualMode = EDIT_DIGIT_0;
@@ -95,7 +95,7 @@ void button0Interrupt(void){
 }
 
 void button1Interrupt(void){
-  printf("Interrupt 1\n");
+  printf("Interrupt 1: Changing Digit\n");
   waitForBounce();
   if(actualMode == RUNNING){
     return;
@@ -117,7 +117,7 @@ int editCount(){
 }
 
 void button2Interrupt(void){
-  printf("Interrupt 2\n");
+  printf("Interrupt 2: Adding number\n");
   waitForBounce();
   if(actualMode == RUNNING){
     return;
@@ -135,7 +135,7 @@ void button2Interrupt(void){
 }
 
 void button3Interrupt(void){
-  printf("Interrupt 3\n");
+  printf("Interrupt 3: Substracting number\n");
   waitForBounce();
   if(actualMode == RUNNING){
     return;

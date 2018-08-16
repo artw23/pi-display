@@ -183,6 +183,11 @@ void initDisplays(){
 		pinMode (SEGMENT_F, OUTPUT) ;
 		pinMode (SEGMENT_G, OUTPUT) ;
 
+    pinMode (BUTTON_0, INPUT) ;
+    pinMode (BUTTON_1, INPUT) ;
+    pinMode (BUTTON_2, INPUT) ;
+    pinMode (BUTTON_3, INPUT) ;
+
 
 		digitalWrite (DIGIT_0, HIGH) ;	// On
 		digitalWrite (DIGIT_1, HIGH) ;	// On

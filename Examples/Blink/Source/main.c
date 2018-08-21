@@ -81,7 +81,7 @@ PI_THREAD (displayThread){
 }
 
 void waitForBounce(){
-  delay(300);
+  delay(1000);
 }
 
 void button0Interrupt(void){

@@ -5,6 +5,8 @@
 
 #define BUZZER 25
 
+const int DEBUG = 1;
+
 float notes[] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14, 30.97};
 
 
@@ -46,6 +48,9 @@ int getScaleNote(char *note, int scale){
 }
 
 void playNote(char *note, int scale, int duration){
+    if(DEBUG != 0){
+      printf("Playing note %s for %d\n", note, duration);
+    }
     softToneWrite (BUZZER, getScaleNote(note, scale));
     delay(duration);
     softToneWrite (BUZZER, 0);
@@ -57,29 +62,19 @@ int main (void)
   wiringPiSetup () ;
   softToneCreate(BUZZER);
   int count = 100;
-  char s[]="c";
+  char s[2]="c";
   for (;;)
   {
 
-    *s="d";
-    playNote(s,1,3000);
+    char *s1="d";
+    playNote(s1,1,3000);
 
-    *s="e";
-    playNote(s,1,3000);
-
-
-    *s="f";
-    playNote(s,1,3000);
+    char *s2="e";
+    playNote(s2,1,3000);
 
 
-    *s="g";
-    playNote(s,1,3000);
-
-    *s="a";
-    playNote(s,1,3000);
-
-    *s="b";
-    playNote(s,1,3000);
+    char *s3 ="f";
+    playNote(s3,1,3000);
 
   }
   return 0 ;

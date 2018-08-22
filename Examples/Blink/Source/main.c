@@ -1,26 +1,31 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
+//Pins that enable each one of the 4 displays
+const int digits[4] =
+{
+  26, // Enable digit 0
+  28, // Enable digit 1
+  27, // Enable digit 2
+  29  // Enable digit 3
+};
 
-#define DIGIT_0 26
-#define DIGIT_1 28
-#define DIGIT_2 27
-#define DIGIT_3 29
+//Pins for the segments of the display
 
-int digits[4] = {DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3};
+const int segments[7] =
+{
+  2, // Segment A
+  0, // Segment B
+  6, // Segment C
+  5, // Segment D
+  4, // Segment E
+  7, // Segment E
+  1  // Segment F
+};
 
+// Values for each segment to represent the numbers from 0 to 9.
 
-#define SEGMENT_A 2
-#define SEGMENT_B 0
-#define SEGMENT_C 6
-#define SEGMENT_D 5
-#define SEGMENT_E 4
-#define SEGMENT_F 7
-#define SEGMENT_G 1
-
-int SEGMENTS[7] = {SEGMENT_A, SEGMENT_B, SEGMENT_C, SEGMENT_D, SEGMENT_E, SEGMENT_F, SEGMENT_G};
-
-int nums[10][7] = { { 0,0,0,0,0,0,1 },    // 0
+const int nums[10][7] = { { 0,0,0,0,0,0,1 },    // 0
                     { 1,0,0,1,1,1,1 },    // 1
                     { 0,0,1,0,0,1,0 },    // 2
                     { 0,0,0,0,1,1,0 },    // 3
@@ -36,8 +41,13 @@ int nums[10][7] = { { 0,0,0,0,0,0,1 },    // 0
 #define BUTTON_2 23
 #define BUTTON_3 24
 
-enum mode{RUNNING, EDIT_DIGIT_0, EDIT_DIGIT_1, EDIT_DIGIT_2, EDIT_DIGIT_3};
-int actualDigits[4] = {0,0,0,0};
+enum mode{
+  RUNNING,
+  CONFIG,
+  EDIT_DIGIT_0, EDIT_DIGIT_1, EDIT_DIGIT_2, EDIT_DIGIT_3
+};
+
+int digitToEdit = 0;
 int actualCount = 0;
 enum mode actualMode = RUNNING;
 
@@ -48,13 +58,13 @@ void displaySingleNum(int num){
   int *actualNum = nums[num];
   int i;
   for(i = 0; i < 7; i++){
-    digitalWrite (SEGMENTS[i], actualNum[i]);
+    digitalWrite (segments[i], actualNum[i]);
   }
 }
 
 void enableDigit(int digit_number){
   int i;
-  for(int i =0; i< 4; i++){
+  for(i =0; i< 4; i++){
     if(digit_number % 4 == i){
       digitalWrite (digits[i], HIGH);
     }else{
@@ -64,7 +74,7 @@ void enableDigit(int digit_number){
 }
 
 void displayNumber(int number){
-	int i, j;
+	int i;
   for(i = 3; i >= 0 ; i --){
     int toDisplay = number%10;
     number = number /10;
@@ -80,15 +90,42 @@ PI_THREAD (displayThread){
   }
 }
 
-void waitForBounce(){
-  delay(1000);
+PI_THREAD (timer){
+  for(;;){
+    if(actualMode == RUNNING){
+      if(actualCount>0){
+        actualCount --;
+      }
+      delay(1000);
+    }
+  }
 }
+
+int myPow(int number, int exponential){
+  int i;
+  if(exponential == 0){
+    return 1;
+  }
+  int output = number;
+  for(i =1; i <= exponential; i++){
+    output = output * number;
+  }
+  return output;
+}
+
+void waitForBounce(){
+  delay(50);
+}
+
+
 
 void button0Interrupt(void){
   printf("Interrupt 0: PAUSE/RUNNING\n");
   waitForBounce();
   if(actualMode == RUNNING){
-    actualMode = EDIT_DIGIT_0;
+    actualMode = CONFIG;
+    actualCount = 0;
+    digitToEdit = 0;
   }else{
     actualMode = RUNNING;
   }
@@ -97,111 +134,72 @@ void button0Interrupt(void){
 void button1Interrupt(void){
   printf("Interrupt 1: Changing Digit\n");
   waitForBounce();
-  if(actualMode == RUNNING){
-    return;
+  if(actualMode == CONFIG){
+    digitToEdit++;
+    if(digitToEdit >=4){
+      digitToEdit = 0;
+    }
   }
-  if(actualMode == EDIT_DIGIT_0){
-    actualMode = EDIT_DIGIT_1;
-  }else if(actualMode == EDIT_DIGIT_1){
-    actualMode = EDIT_DIGIT_2;
-  }else if(actualMode == EDIT_DIGIT_2){
-    actualMode = EDIT_DIGIT_3;
-  }else{
-    actualMode = EDIT_DIGIT_0;
-  }
-}
-
-
-int editCount(){
-  return actualDigits[0] * 1000 + actualDigits[1] * 100 + actualDigits[2] * 10 + actualDigits[3];
 }
 
 void button2Interrupt(void){
   printf("Interrupt 2: Adding number\n");
   waitForBounce();
-  if(actualMode == RUNNING){
-    return;
+
+  int multiplier = myPow(10, digitToEdit);
+  int count = actualCount;
+  int currentDigit = (count / multiplier) % 10;
+  count = count - currentDigit * multiplier;
+  currentDigit = (currentDigit + 1);
+  if(currentDigit > 9){
+    currentDigit = 0;
   }
-  if(actualMode == EDIT_DIGIT_0){
-    actualDigits[0] = (actualDigits[0] + 1) % 10;
-  }else if(actualMode == EDIT_DIGIT_1){
-      actualDigits[1] = (actualDigits[1] + 1) % 10;
-  }else if(actualMode == EDIT_DIGIT_2){
-      actualDigits[2] = (actualDigits[2] + 1) % 10;
-  }else{
-      actualDigits[3] = (actualDigits[3] + 1) % 10;
-  }
-  printf("Editing %i\n", editCount());
+  count = count + currentDigit * multiplier;
+  actualCount = count;
 }
 
 void button3Interrupt(void){
   printf("Interrupt 3: Substracting number\n");
   waitForBounce();
-  if(actualMode == RUNNING){
-    return;
+  int multiplier = myPow(10, digitToEdit);
+  int count = actualCount;
+  int currentDigit = (count / multiplier) % 10;
+  count = count - currentDigit * multiplier;
+  currentDigit = (currentDigit - 1);
+  if(currentDigit < 0){
+    currentDigit = 9;
   }
-  if(actualMode == EDIT_DIGIT_0){
-    int newDigit = (actualDigits[0] - 1);
-    if(newDigit < 0){
-      newDigit = 9;
-    }
-    actualDigits[0] = newDigit;
-  }else if(actualMode == EDIT_DIGIT_1){
-    int newDigit = (actualDigits[1] - 1);
-    if(newDigit < 0){
-      newDigit = 9;
-    }
-    actualDigits[1] = newDigit;
-  }else if(actualMode == EDIT_DIGIT_2){
-    int newDigit = (actualDigits[2] - 1);
-    if(newDigit < 0){
-      newDigit = 9;
-    }
-    actualDigits[2] = newDigit;
-  }else{
-    int newDigit = (actualDigits[3] - 1);
-    if(newDigit < 0){
-      newDigit = 9;
-    }
-    actualDigits[3] = newDigit;
-  }
-  printf("Editing %i\n", editCount());
+  count = count + currentDigit * multiplier;
+  actualCount = count;
 }
 
 
 void initDisplays(){
-		pinMode (DIGIT_0, OUTPUT) ;
-		pinMode (DIGIT_1, OUTPUT) ;
-		pinMode (DIGIT_2, OUTPUT) ;
-		pinMode (DIGIT_3, OUTPUT) ;
+    int i, total;
 
-		pinMode (SEGMENT_A, OUTPUT) ;
-		pinMode (SEGMENT_B, OUTPUT) ;
-		pinMode (SEGMENT_C, OUTPUT) ;
-		pinMode (SEGMENT_D, OUTPUT) ;
-		pinMode (SEGMENT_E, OUTPUT) ;
-		pinMode (SEGMENT_F, OUTPUT) ;
-		pinMode (SEGMENT_G, OUTPUT) ;
+    // Init enable displays
+    total = sizeof(digits)/sizeof(digits[0]);
+    for(i =0; i < total; i++){
+      pinMode (digits[i], OUTPUT) ;
+      digitalWrite (digits[i], HIGH) ;	// On
+    }
 
+    // Init segments of diplays
+    total = sizeof(segments)/sizeof(segments[0]);
+    for(i =0; i < total; i++){
+      pinMode (segments[i], OUTPUT) ;
+
+    }
+
+    // Init imputs buttons
     pinMode (BUTTON_0, INPUT) ;
     pinMode (BUTTON_1, INPUT) ;
     pinMode (BUTTON_2, INPUT) ;
     pinMode (BUTTON_3, INPUT) ;
-
-
-		digitalWrite (DIGIT_0, HIGH) ;	// On
-		digitalWrite (DIGIT_1, HIGH) ;	// On
-		digitalWrite (DIGIT_2, HIGH) ;	// On
-		digitalWrite (DIGIT_3, HIGH) ;	// On
 }
 
-int main (void)
-{
-  printf ("Raspberry Pi blink\n") ;
 
-  wiringPiSetup () ;
-	initDisplays();
-
+int initInterrupts(){
   if ( wiringPiISR (BUTTON_0, INT_EDGE_FALLING, &button0Interrupt) < 0 ) {
       printf("Error creating interruption...\n");
       return 1;
@@ -221,25 +219,24 @@ int main (void)
       printf("Error creating interruption...\n");
       return 1;
   }
+  return 0;
+}
+void initThreads(){
+  piThreadCreate (displayThread);
+  piThreadCreate (timer);
+}
+
+int main (void)
+{
+  printf ("Raspberry Pi blink\n") ;
+
+  wiringPiSetup();
+	initDisplays();
+  initInterrupts();
+  initThreads();
 
   printf("Starting main loop...\n");
-  int count = 0;
-  int print = 0;
   actualCount = 100;
-  piThreadCreate (displayThread) ;
-  for (;;)
-  {
-    switch (actualMode) {
-      case RUNNING:
-        if(actualCount>0){
-          actualCount --;
-        }
-        delay(1000);
-      break;
-      default:
-        actualCount = editCount();
-      break;
-    }
-  }
+  for (;;);
   return 0 ;
 }

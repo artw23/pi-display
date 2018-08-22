@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
+const int DEBUG = 1;
+
 //Pins that enable each one of the 4 displays
 const int digits[4] =
 {
@@ -53,7 +55,7 @@ enum mode actualMode = RUNNING;
 
 
 
-
+// Write the input number to the 7 segment display
 void displaySingleNum(int num){
   int *actualNum = nums[num];
   int i;
@@ -62,6 +64,7 @@ void displaySingleNum(int num){
   }
 }
 
+// Enable one of the 4 displays
 void enableDigit(int digit_number){
   int i;
   for(i =0; i< 4; i++){
@@ -73,6 +76,7 @@ void enableDigit(int digit_number){
   }
 }
 
+// display a number in the 4 displays
 void displayNumber(int number){
 	int i;
   for(i = 3; i >= 0 ; i --){
@@ -84,12 +88,14 @@ void displayNumber(int number){
   }
 }
 
+// Thread to display numbers in the displays
 PI_THREAD (displayThread){
   for(;;){
     displayNumber(actualCount);
   }
 }
 
+// Thread to substract a number every second of the count
 PI_THREAD (timer){
   for(;;){
     if(actualMode == RUNNING){
@@ -101,6 +107,7 @@ PI_THREAD (timer){
   }
 }
 
+//Custom implementation of an exponential function
 int myPow(int number, int exponential){
   int i;
   if(exponential == 0){
@@ -113,26 +120,28 @@ int myPow(int number, int exponential){
   return output;
 }
 
+// Delay for wait until the button bounces
 void waitForBounce(){
-  delay(50);
+  delay(100);
 }
 
 
-
+// Button 0 is for entering edit mode
 void button0Interrupt(void){
-  printf("Interrupt 0: PAUSE/RUNNING\n");
   waitForBounce();
   if(actualMode == RUNNING){
     actualMode = CONFIG;
-    actualCount = 0;
     digitToEdit = 0;
   }else{
     actualMode = RUNNING;
   }
+  if(DEBUG != 0){
+    printf("Changing to %d mode \n", actualMode);
+  }
 }
 
+// Button 1 is for changing the digit to edit
 void button1Interrupt(void){
-  printf("Interrupt 1: Changing Digit\n");
   waitForBounce();
   if(actualMode == CONFIG){
     digitToEdit++;
@@ -140,12 +149,17 @@ void button1Interrupt(void){
       digitToEdit = 0;
     }
   }
+  if(DEBUG != 0){
+    printf("Changing to  edit digit %d\n", digitToEdit);
+  }
 }
 
+// Adding one to the editing digit
 void button2Interrupt(void){
-  printf("Interrupt 2: Adding number\n");
   waitForBounce();
-
+  if(actualMode != CONFIG){
+    return;
+  }
   int multiplier = myPow(10, digitToEdit);
   int count = actualCount;
   int currentDigit = (count / multiplier) % 10;
@@ -156,11 +170,18 @@ void button2Interrupt(void){
   }
   count = count + currentDigit * multiplier;
   actualCount = count;
+
+  if(DEBUG != 0){
+    printf("Change to digit %d\n", currentDigit);
+  }
 }
 
+// Substracting 1 from the editing digit
 void button3Interrupt(void){
-  printf("Interrupt 3: Substracting number\n");
   waitForBounce();
+  if(actualMode != CONFIG){
+    return;
+  }
   int multiplier = myPow(10, digitToEdit);
   int count = actualCount;
   int currentDigit = (count / multiplier) % 10;
@@ -171,6 +192,10 @@ void button3Interrupt(void){
   }
   count = count + currentDigit * multiplier;
   actualCount = count;
+
+  if(DEBUG != 0){
+    printf("Change to digit %d\n", currentDigit);
+  }
 }
 
 
@@ -221,6 +246,8 @@ int initInterrupts(){
   }
   return 0;
 }
+
+
 void initThreads(){
   piThreadCreate (displayThread);
   piThreadCreate (timer);
@@ -236,6 +263,7 @@ int main (void)
   initThreads();
 
   printf("Starting main loop...\n");
+  //Start in 100 just to give an example
   actualCount = 100;
   for (;;);
   return 0 ;

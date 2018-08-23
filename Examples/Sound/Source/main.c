@@ -143,7 +143,7 @@ int main (void)
     printf("string #%d: %s\n", i, arr[i]);
     char str [4];
     int scale, duration;
-    sscanf(arr[i],"%d%s[#a-z]%d", &duration, str, &scale);
+    sscanf(arr[i],"%d%2[#a-z]%d", &duration, str, &scale);
     printf("DURATION: '%d'  NOTE: '%s' SCALE: '%d'\n",duration,str,scale);
   }
 

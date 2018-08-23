@@ -146,7 +146,7 @@ int main (void)
 
   for (i = 0; i < c; i++){
     printf("string #%d: %s\n", i, arr[i]);
-    int legth = strlen(arr[i])
+    int legth = strlen(arr[i]);
 
     char str [4];
     int scale, duration;

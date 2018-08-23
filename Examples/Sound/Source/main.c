@@ -144,7 +144,7 @@ int main (void)
     char str [4];
     int scale, duration;
     sscanf(arr[i],"%d%s%d", &duration, str, &scale);
-    printf("NOTE: %d%s%d\n",duration,str,scale);
+    printf("DURATION: '%d'  NOTE: '%s' SCALE: '%d'\n",duration,str,scale);
   }
 
 

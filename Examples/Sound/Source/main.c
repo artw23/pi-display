@@ -16,7 +16,9 @@ const float notes[] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 2
 #define MAMA_MIA "32f2 32#d2 32f2 8#d2 32#d2 32#d2 32f2 32g2 32f2 16.#d2 32- 16f2 8#d2 16#g2 32#g2 32#g2 32#g2 16g2 16.#d232- 8#a2 32#a2 32#a2 16#a2 16f2 16g2 8#g2 16g2 16g2 32g2 16g2 16d2 16#d2 8f2 16f2 8#d2 16#g2 32#g2 32#g232#g2 32g2 32#d2 32f2 16#d2"
 
 #define HIGHWAY "4#d1 4#d1 8#d1 4- 4- 4- 4- 4c1 4c1 8#c1 4- 4- 4- 4- 4c1 4c1 8#c1 4c1 4c1 8#c1 8c1 4#d1 8#d1"
-char * ACTUAL_SONG = HIGHWAY;
+
+#define NOKIA "8E2 8D2 4#F2 4#F2 4E2 4D2 2#F2 8D2 8E2 4D2 2D2 8A1 8B1 4D2 4E2 4#C2 4B1 8E2 8D2 4#F2 4#F2 4E2 4D2 2#F2 8D2 8E2 4D2 2D2 8A1 8B1 4D2 4E2 4#C2 4B1 8A1 8A1 2.G1 "
+char * ACTUAL_SONG = NOKIA;
 
 int split (const char *str, char c, char ***arr)
 {
@@ -115,7 +117,7 @@ int getScaleNote(char *note, int scale){
     scale = scale + offset;
     float currentNote = getBaseNote(note) * (scale);
     if(DEBUG != 0){
-      printf("Playing frequency %d\n", currentNote);
+      printf("Playing frequency %f\n", currentNote);
     }
     int intCurrentNote = (int) currentNote;
     if((currentNote - intCurrentNote) > 0.5){

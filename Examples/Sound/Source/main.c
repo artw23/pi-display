@@ -145,7 +145,8 @@ int main (void)
   int c = split(ACTUAL_SONG, ' ', &arr);
   int i;
   printf("found %d tokens.\n", c);
-
+  playNote('a', 1,1);
+  delay(1000);
   for (i = 0; i < c; i++){
     printf("string #%d: %s\n", i, arr[i]);
     int length = strlen(arr[i]);

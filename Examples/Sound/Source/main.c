@@ -13,12 +13,14 @@ const float notes[] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 2
 
 #define BACK_IN_BLACK "8e1 4- 4- 4- 4- 4d2 4d2 8d2 4- 4- 4- 4- 4#c2 4#c2 8#c2 4- 4- 4- 4- 4g2 4e2 4d2 4b1 4b1 4a1 4g1 8e1"
 
+#define MISION_IMPOSIBLE "16g2 8- 16g2 8- 16f2 16- 16#f2 16- 16g2 8- 16g2 8- 16#a2 16- 16c3 16- 16g2 8- 16g2 8- 16f2 16- 16#f2 16- 16g28- 16g2 8- 16#a2 16- 16c3 16- 16#a2 16g2 2d2 32- 16#a2 16g2 2#c2 32- 16#a2 16g2 2c2 16- 16#a1 16c2"
+
 #define MAMA_MIA "32f2 32#d2 32f2 8#d2 32#d2 32#d2 32f2 32g2 32f2 16.#d2 32- 16f2 8#d2 16#g2 32#g2 32#g2 32#g2 16g2 16#d232- 8#a2 32#a2 32#a2 16#a2 16f2 16g2 8#g2 16g2 16g2 32g2 16g2 16d2 16#d2 8f2 16f2 8#d2 16#g2 32#g2 32#g232#g2 32g2 32#d2 32f2 16#d2"
 
 #define HIGHWAY_TO_HELL "4#d1 4#d1 8#d1 4- 4- 4- 4- 4c1 4c1 8#c1 4- 4- 4- 4- 4c1 4c1 2#c1 4c1 4c1 8#c1 8c1 4#d1 8#d1"
 
 #define NOKIA "8e2 8d2 4#f2 4#f2 4e2 4d2 2#f2 8d2 8e2 4d2 2d2 8a1 8b1 4d2 4e2 4#c2 4b1 8e2 8d2 4#f2 4#f2 4e2 4d2 2#f2 8d2 8e2 4d2 2d2 8a1 8b1 4d2 4e2 4#c2 4b1 8a1 8a1"
-char * ACTUAL_SONG = BACK_IN_BLACK;
+char * ACTUAL_SONG = MISION_IMPOSIBLE;
 
 int split (const char *str, char c, char ***arr)
 {

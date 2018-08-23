@@ -145,6 +145,7 @@ int main (void)
     int scale, duration;
     sscanf(arr[i],"%d%2[#a-z]%d", &duration, str, &scale);
     printf("DURATION: '%d'  NOTE: '%s' SCALE: '%d'\n",duration,str,scale);
+    playNote(str,scale,duration);
   }
 
 

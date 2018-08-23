@@ -15,52 +15,65 @@ const char * HIGGHWAY_TO_HELL = "8e1 4- 4- 4- 4- 4d2 4d2 8d2 4- 4- 4- 4- 4#c2 4#
 
 char * ACTUAL_SONG = "8e1 4- 4- 4- 4- 4d2 4d2 8d2 4- 4- 4- 4- 4#c2 4#c2 8#c2 4- 4- 4- 4- 4g2 4e2 4d2 4b1 4b1 4a1 4g1 8e1";
 
-char** str_split(char* a_str, const char a_delim)
+int split (const char *str, char c, char ***arr)
 {
-    char** result    = 0;
-    size_t count     = 0;
-    char* tmp        = a_str;
-    char* last_comma = 0;
-    char delim[2];
-    delim[0] = a_delim;
-    delim[1] = 0;
+    int count = 1;
+    int token_len = 1;
+    int i = 0;
+    char *p;
+    char *t;
 
-    /* Count how many elements will be extracted. */
-    while (*tmp)
+    p = str;
+    while (*p != '\0')
     {
-        if (a_delim == *tmp)
-        {
+        if (*p == c)
             count++;
-            last_comma = tmp;
-        }
-        tmp++;
+        p++;
     }
 
-    /* Add space for trailing token. */
-    count += last_comma < (a_str + strlen(a_str) - 1);
+    *arr = (char**) malloc(sizeof(char*) * count);
+    if (*arr == NULL)
+        exit(1);
 
-    /* Add space for terminating null string so caller
-       knows where the list of returned strings ends. */
-    count++;
-
-    result = malloc(sizeof(char*) * count);
-
-    if (result)
+    p = str;
+    while (*p != '\0')
     {
-        size_t idx  = 0;
-        char* token = strtok(a_str, delim);
-
-        while (token)
+        if (*p == c)
         {
-            assert(idx < count);
-            *(result + idx++) = strdup(token);
-            token = strtok(0, delim);
+            (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
+            if ((*arr)[i] == NULL)
+                exit(1);
+
+            token_len = 0;
+            i++;
         }
-        assert(idx == count - 1);
-        *(result + idx) = 0;
+        p++;
+        token_len++;
+    }
+    (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
+    if ((*arr)[i] == NULL)
+        exit(1);
+
+    i = 0;
+    p = str;
+    t = ((*arr)[i]);
+    while (*p != '\0')
+    {
+        if (*p != c && *p != '\0')
+        {
+            *t = *p;
+            t++;
+        }
+        else
+        {
+            *t = '\0';
+            i++;
+            t = ((*arr)[i]);
+        }
+        p++;
     }
 
-    return result;
+    return count;
 }
 
 int getBaseNote(char *note){
@@ -118,21 +131,23 @@ int main (void)
   wiringPiSetup () ;
   softToneCreate(BUZZER);
 
-  char** notes = str_split(ACTUAL_SONG, ' ');
 
-  printf("checking notes...");
-  if (notes)
-  {
-      int i;
-      for (i = 0; *(notes + i); i++)
-      {
-        printf("%s\n", *(notes + i));
-        char str [4];
-        int scale, duration;
-        sscanf(*(notes + i),"%d%s%d", &duration, str, &scale);
-        printf("NOTE: %d%s%d\n",duration,str,scale);
-      }
+
+  char **arr = NULL;
+
+  int c = split(ACTUAL_SONG, ' ', &arr);
+  int i;
+  printf("found %d tokens.\n", c);
+
+  for (i = 0; i < c; i++){
+    printf("string #%d: %s\n", i, arr[i]);
+    char str [4];
+    int scale, duration;
+    sscanf(arr[i],"%d%s%d", &duration, str, &scale);
+    printf("NOTE: %d%s%d\n",duration,str,scale);
   }
+
+
   for (;;)
   {
 

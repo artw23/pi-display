@@ -107,7 +107,7 @@ int getBaseNote(char *note){
 }
 
 int getScaleNote(char *note, int scale){
-  float currentNote = getBaseNote(note) * scale;
+  float currentNote = getBaseNote(note) * (scale +2);
   int intCurrentNote = (int) currentNote;
   if((currentNote - intCurrentNote) > 0.5){
     intCurrentNote ++;

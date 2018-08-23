@@ -15,7 +15,8 @@ const float notes[] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 2
 
 #define MAMA_MIA "32f2 32#d2 32f2 8#d2 32#d2 32#d2 32f2 32g2 32f2 16.#d2 32- 16f2 8#d2 16#g2 32#g2 32#g2 32#g2 16g2 16.#d232- 8#a2 32#a2 32#a2 16#a2 16f2 16g2 8#g2 16g2 16g2 32g2 16g2 16d2 16#d2 8f2 16f2 8#d2 16#g2 32#g2 32#g232#g2 32g2 32#d2 32f2 16#d2"
 
-char * ACTUAL_SONG = MAMA_MIA;
+#define HIGHWAY "4#d1 4#d1 8#d1 4- 4- 4- 4- 4c1 4c1 8#c1 4- 4- 4- 4- 4c1 4c1 8#c1 4c1 4c1 8#c1 8c1 4#d1 8#d1"
+char * ACTUAL_SONG = HIGHWAY;
 
 int split (const char *str, char c, char ***arr)
 {
@@ -130,7 +131,7 @@ void playNote(char *note, int scale, int duration){
       printf("Playing note %s for %d\n", note, duration);
     }
     softToneWrite (BUZZER, getScaleNote(note, scale));
-    int realDelay = 1000/duration;
+    int realDelay = 1500/duration;
     delay(realDelay);
 }
 
@@ -148,8 +149,7 @@ int main (void)
   int i;
   printf("found %d tokens.\n", c);
   char * testNote = "a";
-  playNote(testNote, 1,1);
-  delay(1000);
+
   for (i = 0; i < c; i++){
     printf("string #%d: %s\n", i, arr[i]);
     int length = strlen(arr[i]);
@@ -165,7 +165,6 @@ int main (void)
     printf("DURATION: '%d'  NOTE: '%s' SCALE: '%d'\n",duration,str,scale);
     playNote(str,scale,duration);
   }
-
 
   return 0 ;
 }

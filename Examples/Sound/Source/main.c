@@ -107,12 +107,17 @@ int getBaseNote(char *note){
 }
 
 int getScaleNote(char *note, int scale){
-  float currentNote = getBaseNote(note) * (scale +3);
-  int intCurrentNote = (int) currentNote;
-  if((currentNote - intCurrentNote) > 0.5){
-    intCurrentNote ++;
+  int offset = 4 ;
+  scale = scale + offset;
+  if(scale > 0 && scale < 5){
+    float currentNote = getBaseNote(note) * (scale);
+    int intCurrentNote = (int) currentNote;
+    if((currentNote - intCurrentNote) > 0.5){
+      intCurrentNote ++;
+    }
+    return intCurrentNote;
   }
-  return intCurrentNote;
+  return 0
 }
 
 void playNote(char *note, int scale, int duration){
@@ -141,9 +146,16 @@ int main (void)
 
   for (i = 0; i < c; i++){
     printf("string #%d: %s\n", i, arr[i]);
+    int legth = strlen(arr[i])
+
     char str [4];
     int scale, duration;
-    sscanf(arr[i],"%d%2[#a-z]%d", &duration, str, &scale);
+    if(length < 3){
+      sscanf(arr[i],"%d%s", &duration, str);
+      scale = 0;
+    }else{
+      sscanf(arr[i],"%d%2[#a-z]%d", &duration, str, &scale);
+    }
     printf("DURATION: '%d'  NOTE: '%s' SCALE: '%d'\n",duration,str,scale);
     playNote(str,scale,duration);
   }

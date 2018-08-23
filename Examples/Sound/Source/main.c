@@ -148,19 +148,5 @@ int main (void)
   }
 
 
-  for (;;)
-  {
-
-    char *s1="d";
-    playNote(s1,1,3000);
-
-    char *s2="e";
-    playNote(s2,1,3000);
-
-
-    char *s3 ="f";
-    playNote(s3,1,3000);
-
-  }
   return 0 ;
 }

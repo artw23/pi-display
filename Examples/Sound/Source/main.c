@@ -112,7 +112,7 @@ int getScaleNote(char *note, int scale){
   if(scale >= 0 && scale < 5){
     float currentNote = getBaseNote(note) * (scale);
     if(DEBUG != 0){
-      printf("Playing note %s for %d\n", note, duration);
+      printf("Playing frequency %d\n", currentNote);
     }
     int intCurrentNote = (int) currentNote;
     if((currentNote - intCurrentNote) > 0.5){

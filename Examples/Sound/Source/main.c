@@ -148,7 +148,7 @@ void playNote(char *note, int scale, int duration){
       printf("Playing note %s for %d\n", note, duration);
     }
     softToneWrite (BUZZER, getScaleNote(note, scale));
-    int realDelay = 4000/duration;
+    int realDelay = 2000/duration;
     delay(realDelay);
     softToneWrite (BUZZER, 0);
     delay(10);

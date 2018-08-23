@@ -108,8 +108,8 @@ int getBaseNote(char *note){
 
 int getScaleNote(char *note, int scale){
   int offset = 4 ;
-  scale = scale + offset;
   if(scale >= 0 && scale < 5){
+    scale = scale + offset;
     float currentNote = getBaseNote(note) * (scale);
     if(DEBUG != 0){
       printf("Playing frequency %d\n", currentNote);

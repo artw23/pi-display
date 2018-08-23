@@ -111,11 +111,24 @@ int getBaseNote(char *note){
   }
 }
 
+//Custom implementation of an exponential function
+int myPow(int number, int exponential){
+  int i;
+  if(exponential == 0){
+    return 1;
+  }
+  int output = number;
+  for(i =1; i <= exponential; i++){
+    output = output * number;
+  }
+  return output;
+}
+
 int getScaleNote(char *note, int scale){
-  int offset = 5 ;
+  int offset = 3 ;
   if(scale >= 0 && scale < 5){
     scale = scale + offset;
-    float currentNote = getBaseNote(note) * (scale);
+    float currentNote = getBaseNote(note) * myPow(2,scale);
     if(DEBUG != 0){
       printf("Playing frequency %f\n", currentNote);
     }

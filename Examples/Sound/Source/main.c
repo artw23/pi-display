@@ -18,7 +18,7 @@ const float notes[] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 2
 #define HIGHWAY "4#d1 4#d1 8#d1 4- 4- 4- 4- 4c1 4c1 8#c1 4- 4- 4- 4- 4c1 4c1 8#c1 4c1 4c1 8#c1 8c1 4#d1 8#d1"
 
 #define NOKIA "8e2 8d2 4#f2 4#f2 4e2 4d2 2#f2 8d2 8e2 4d2 2d2 8a1 8b1 4d2 4e2 4#c2 4b1 8e2 8d2 4#f2 4#f2 4e2 4d2 2#f2 8d2 8e2 4d2 2d2 8a1 8b1 4d2 4e2 4#c2 4b1 8a1 8a1"
-char * ACTUAL_SONG = HIGGHWAY_TO_HELL;
+char * ACTUAL_SONG = HIGHWAY;
 
 int split (const char *str, char c, char ***arr)
 {

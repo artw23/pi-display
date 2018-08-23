@@ -13,7 +13,7 @@ const float notes[] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 2
 
 #define HIGGHWAY_TO_HELL = "8e1 4- 4- 4- 4- 4d2 4d2 8d2 4- 4- 4- 4- 4#c2 4#c2 8#c2 4- 4- 4- 4- 4g2 4e2 4d2 4b1 4b1 4a1 4g1 8e1"
 
-#define MAMA_MIA "32f2 32#d2 32f2 8#d2 32#d2 32#d2 32f2 32g2 32f2 16.#d2 32- 16f2 8#d2 16#g2 32#g2 32#g2 32#g2 16g2 16.#d232- 8#a2 32#a2 32#a2 16#a2 16f2 16g2 8#g2 16g2 16g2 32g2 16g2 16d2 16#d2 8f2 16f2 8#d2 16#g2 32#g2 32#g232#g2 32g2 32#d2 32f2 16#d2"
+#define MAMA_MIA "32f2 32#d2 32f2 8#d2 32#d2 32#d2 32f2 32g2 32f2 16.#d2 32- 16f2 8#d2 16#g2 32#g2 32#g2 32#g2 16g2 16#d232- 8#a2 32#a2 32#a2 16#a2 16f2 16g2 8#g2 16g2 16g2 32g2 16g2 16d2 16#d2 8f2 16f2 8#d2 16#g2 32#g2 32#g232#g2 32g2 32#d2 32f2 16#d2"
 
 #define HIGHWAY "4#d1 4#d1 8#d1 4- 4- 4- 4- 4c1 4c1 8#c1 4- 4- 4- 4- 4c1 4c1 8#c1 4c1 4c1 8#c1 8c1 4#d1 8#d1"
 
@@ -112,7 +112,7 @@ int getBaseNote(char *note){
 }
 
 int getScaleNote(char *note, int scale){
-  int offset = 4 ;
+  int offset = 5 ;
   if(scale >= 0 && scale < 5){
     scale = scale + offset;
     float currentNote = getBaseNote(note) * (scale);

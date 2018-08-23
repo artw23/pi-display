@@ -117,7 +117,7 @@ int getScaleNote(char *note, int scale){
     }
     return intCurrentNote;
   }
-  return 0
+  return 0;
 }
 
 void playNote(char *note, int scale, int duration){
@@ -146,7 +146,7 @@ int main (void)
 
   for (i = 0; i < c; i++){
     printf("string #%d: %s\n", i, arr[i]);
-    int legth = strlen(arr[i]);
+    int length = strlen(arr[i]);
 
     char str [4];
     int scale, duration;
